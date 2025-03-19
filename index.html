@@ -231,25 +231,26 @@
         }
         
         .scroll-indicator {
-            position: absolute;
-            bottom: 20px; /* Positioned at the bottom of the blue section */
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-family: 'NeueHaasDisplayThin', sans-serif;
-            font-size: 12pt;
-            font-weight: 100;
-            color: white;
-            letter-spacing: -0.05em; /* -5% tracking */
-            z-index: 100;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 4px; /* Reduced gap to bring icons closer to text */
-            pointer-events: none; /* Make it non-clickable */
-        }
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-family: 'NeueHaasDisplayThin', sans-serif;
+    font-size: 12pt;
+    font-weight: 100;
+    color: white;
+    /* Remove this line: letter-spacing: -0.05em; */
+    z-index: 100;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    pointer-events: none;
+}
+
         
         .material-symbols-outlined {
             color: white;
