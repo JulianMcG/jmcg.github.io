@@ -200,14 +200,20 @@
         }
         
         #cursor-mail-icon {
-            color: #0000FF;
-            font-size: 10px; /* Start with a small size */
-            display: block; /* Always display but initially invisible */
-            opacity: 0;
-            transform-origin: center;
-            transition: opacity 0.2s ease, font-size 0.2s ease, color 0.3s ease;
-            font-variation-settings: 'wght' 200, 'FILL' 0, 'GRAD' -25;
-        }
+    color: #0000FF;
+    font-size: 10px; /* Start with a small size */
+    display: flex; /* Change to flex from block */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    opacity: 0;
+    transform-origin: center;
+    transition: opacity 0.2s ease, font-size 0.2s ease, color 0.3s ease;
+    font-variation-settings: 'wght' 200, 'FILL' 0, 'GRAD' -25;
+    position: absolute; /* Position absolutely */
+    width: 100%; /* Take full width of cursor */
+    height: 100%; /* Take full height of cursor */
+}
+
         
         #custom-cursor.contact-hover #cursor-mail-icon {
             opacity: 1;
