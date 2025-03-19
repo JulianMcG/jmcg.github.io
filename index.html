@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&display=swap" rel="stylesheet">
-    <!-- Import Material Symbols with bold weight (700) -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,700,0,0" />
+    <!-- Import Material Symbols with slightly thicker weight (200 instead of 100) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200,0,-25" />
     <style>
         @font-face {
             font-family: 'NeueHaasDisplayBlack';
@@ -26,6 +26,13 @@
             font-style: normal;
         }
         
+        @font-face {
+            font-family: 'NeueHaasDisplayThin';
+            src: url('NeueHaasDisplayThin.ttf') format('truetype');
+            font-weight: 100;
+            font-style: normal;
+        }
+        
         html {
             scroll-behavior: smooth;
             scroll-snap-type: y mandatory;
@@ -37,6 +44,10 @@
             padding: 0;
             cursor: none; /* Hide default cursor */
             overflow-x: hidden;
+            user-select: none; /* Prevent text selection */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE/Edge */
         }
         
         .section {
@@ -65,6 +76,7 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000; /* Increased z-index to ensure logo is on top of everything */
+            cursor: none;
         }
         
         .logo {
@@ -73,6 +85,7 @@
             position: absolute;
             top: 20px;
             transition: opacity 0.15s ease; /* Quick fade transition */
+            cursor: none;
         }
         
         .logo-symbol {
@@ -116,6 +129,9 @@
             pointer-events: none;
             z-index: 9999;
             transition: width 0.2s ease, height 0.2s ease, background-color 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         
         #custom-cursor.clicked {
@@ -127,15 +143,102 @@
             background-color: #0000FF;
         }
         
+        #custom-cursor.contact-hover {
+            width: 45px;
+            height: 45px;
+        }
+        
+        #custom-cursor.contact-clicked {
+            width: 35px;
+            height: 35px;
+        }
+        
+        #custom-cursor.about-hover {
+            width: 45px;
+            height: 45px;
+        }
+        
+        #custom-cursor.about-clicked {
+            width: 35px;
+            height: 35px;
+        }
+        
+        #cursor-text {
+            font-family: 'NeueHaasDisplayThin', sans-serif;
+            color: #0000FF;
+            font-size: 0px; /* Start with size 0 */
+            font-weight: 100;
+            display: flex; /* Change to flex */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            opacity: 0;
+            transform-origin: center;
+            transition: opacity 0.2s ease, font-size 0.2s ease, color 0.3s ease;
+            position: absolute; /* Position absolutely */
+            width: 100%; /* Take full width of cursor */
+            height: 100%; /* Take full height of cursor */
+            text-align: center;
+            line-height: 1;
+        }
+        
+        #custom-cursor.about-hover #cursor-text {
+            opacity: 1;
+            font-size: 18px; /* Grow to this size */
+            animation: rotateText 1.5s ease-in-out infinite alternate;
+            transition: opacity 0.2s ease, font-size 0.2s ease; /* Match cursor transition */
+        }
+        
+        #custom-cursor.about-clicked #cursor-text {
+            opacity: 1;
+            font-size: 16px; /* Slightly smaller when clicked */
+            animation: rotateText 1.5s ease-in-out infinite alternate;
+            transition: font-size 0.2s ease; /* Match cursor transition */
+        }
+        
+        #custom-cursor.blue-cursor #cursor-text {
+            color: white;
+        }
+        
+        #cursor-mail-icon {
+            color: #0000FF;
+            font-size: 10px; /* Start with a small size */
+            display: block; /* Always display but initially invisible */
+            opacity: 0;
+            transform-origin: center;
+            transition: opacity 0.2s ease, font-size 0.2s ease, color 0.3s ease;
+            font-variation-settings: 'wght' 200, 'FILL' 0, 'GRAD' -25;
+        }
+        
+        #custom-cursor.contact-hover #cursor-mail-icon {
+            opacity: 1;
+            font-size: 24px; /* Grow to this size */
+            transition: opacity 0.2s ease, font-size 0.2s ease; /* Match cursor transition */
+        }
+        
+        #custom-cursor.contact-clicked #cursor-mail-icon {
+            opacity: 1;
+            font-size: 20px; /* Slightly smaller when clicked */
+            transition: font-size 0.2s ease; /* Match cursor transition */
+        }
+        
+        #custom-cursor.blue-cursor #cursor-mail-icon {
+            color: white;
+        }
+        
+        @keyframes rotateText {
+            0% { transform: rotate(-10deg) scale(1); }
+            100% { transform: rotate(10deg) scale(1); }
+        }
+        
         .scroll-indicator {
             position: absolute;
             bottom: 20px; /* Positioned at the bottom of the blue section */
             left: 0;
             width: 100%;
             text-align: center;
-            font-family: 'NeueHaasDisplayBlack', sans-serif;
+            font-family: 'NeueHaasDisplayThin', sans-serif;
             font-size: 12pt;
-            font-weight: 900;
+            font-weight: 100;
             color: white;
             letter-spacing: -0.05em; /* -5% tracking */
             z-index: 100;
@@ -169,7 +272,7 @@
             box-sizing: border-box;
             z-index: 999;
             opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.15s ease; /* Faster transition - changed from 0.3s */
             pointer-events: none; /* Initially non-clickable */
         }
         
@@ -191,36 +294,79 @@
         
         .nav-item {
             font-family: 'NeueHaasDisplayBold', sans-serif;
-            font-size: 60px; /* Slightly smaller than logo height */
+            font-size: 50px; /* Reduced from 60px to make it smaller */
             font-weight: 700;
             letter-spacing: -0.05em; /* -5% tracking */
             color: #0000FF;
             white-space: nowrap;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            line-height: 75px; /* Match logo height */
+            line-height: 0.9; /* Reduced from 1 to make it even more compact */
+            cursor: none;
+            text-decoration: none;
+            display: inline-block;
         }
         
-        .home {
-            position: absolute;
-            left: 20px; /* Same padding as top (20px) */
-        }
-        
-        .work {
-            position: absolute;
-            left: 50%; /* Centered in the left section */
-            transform: translateX(-50%);
+        .nav-item.active {
+            color: #0000FF;
         }
         
         .about {
             position: absolute;
-            left: 50%; /* Centered in the right section */
-            transform: translateX(-50%);
+            left: 20px; /* Same padding as top (20px) */
         }
         
         .contact {
             position: absolute;
             right: 20px; /* Same padding as top (20px) */
+        }
+        
+         /* Updated Blue footer bar styles */
+         .footer-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background-color: #0000FF;
+            overflow: hidden;
+            cursor: none;
+        }
+        
+        .marquee-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .marquee-content {
+            display: inline-block;
+            white-space: nowrap;
+            position: absolute;
+            height: 100%;
+            animation: marquee 120s linear infinite; /* Doubled the duration to make it slower */
+            letter-spacing: -0.05em; /* Keep the same tracking */
+        }
+        
+        .marquee-content.paused {
+            animation-play-state: paused;
+        }
+        
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        .footer-text {
+            font-family: 'NeueHaasDisplayBold', sans-serif;
+            font-size: 16pt; /* Increased from 14pt to 16pt */
+            font-weight: 700;
+            color: white;
+            line-height: 40px; /* Match the height of the footer */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: inline-block;
         }
     </style>
 </head>
@@ -248,23 +394,35 @@
     <!-- Navigation that appears when scrolled -->
     <div class="navigation" id="main-nav">
         <div class="nav-left">
-            <div class="nav-item home">HOME</div>
-            <div class="nav-item work">WORK</div>
+            <a href="about.html" class="nav-item about active">ABOUT</a>
         </div>
         <div class="nav-right">
-            <div class="nav-item about">ABOUT</div>
-            <div class="nav-item contact">CONTACT</div>
+            <a href="mailto:hi@jmcg.me" class="nav-item contact">CONTACT</a>
         </div>
     </div>
     
     <div class="section white-section" id="second-section">
         <!-- Content for the white section goes here -->
+        
+        <!-- Blue footer bar at the bottom of the white section -->
+        <div class="footer-bar" id="footer-bar">
+            <div class="marquee-container">
+                <div class="marquee-content" id="marquee-content">
+                    <!-- Content will be added by JavaScript -->
+                </div>
+            </div>
+        </div>
     </div>
     
-    <div id="custom-cursor"></div>
+    <div id="custom-cursor">
+        <div id="cursor-text">GO!</div>
+        <span class="material-symbols-outlined" id="cursor-mail-icon">mail</span>
+    </div>
     
     <script>
         const cursor = document.getElementById('custom-cursor');
+        const cursorText = document.getElementById('cursor-text');
+        const cursorMailIcon = document.getElementById('cursor-mail-icon');
         const leftText = document.getElementById('left-text');
         const rightText = document.getElementById('right-text');
         const logoSymbol = document.getElementById('logo-symbol');
@@ -274,12 +432,123 @@
         const logoContainer = document.querySelector('.logo-container');
         const navigation = document.getElementById('main-nav');
         const navItems = document.querySelectorAll('.nav-item');
+        const contactLink = document.querySelector('.nav-item.contact');
+        const aboutLink = document.querySelector('.nav-item.about');
         const defaultFontSize = 100; // in pt
         const minGap = 7.5; // minimum gap in pixels
+        const marqueeContent = document.getElementById('marquee-content');
+        const footerBar = document.getElementById('footer-bar');
         
         // Original text content without period
-        const originalLeftText = "hello, there";
-        const leftTextWithPeriod = "hello, there.";
+        const originalLeftText = "hello there";
+        const leftTextWithPeriod = "hello there.";
+        
+        // Footer marquee text
+        const footerText = "HI  THERE!  MY  NAME'S  JULIAN.  I'M  A  16-YEAR-OLD  GRAPHIC  DESIGNER/GRAPHIC  DESIGN  STUDENT  BASED  IN  NEW  JERSEY,  USA.  I  LOVE  CREATING  WEBSITES,  PRODUCT  CONCEPTS,  T-SHIRTS,  AND  MORE!  THANKS  FOR  CHECKING  OUT  MY  PORTFOLIO.  I  HOPE  YOU  FIND  SOMETHING  YOU  LIKE!  :)";
+        
+        // Add hover effect for contact link
+        contactLink.addEventListener('mouseenter', () => {
+            cursor.classList.add('contact-hover');
+        });
+        
+        contactLink.addEventListener('mouseleave', () => {
+            if (!cursor.classList.contains('contact-clicked')) {
+                cursor.classList.remove('contact-hover');
+            }
+        });
+        
+        contactLink.addEventListener('mousedown', () => {
+            cursor.classList.add('contact-clicked');
+            cursor.classList.remove('contact-hover');
+        });
+        
+        contactLink.addEventListener('mouseup', () => {
+            cursor.classList.remove('contact-clicked');
+            // Don't remove contact-hover if still hovering
+            if (isHoveringContact()) {
+                cursor.classList.add('contact-hover');
+            }
+        });
+        
+        // Add hover effect for about link
+        aboutLink.addEventListener('mouseenter', () => {
+            cursor.classList.add('about-hover');
+        });
+        
+        aboutLink.addEventListener('mouseleave', () => {
+            if (!cursor.classList.contains('about-clicked')) {
+                cursor.classList.remove('about-hover');
+            }
+        });
+        
+        aboutLink.addEventListener('mousedown', () => {
+            cursor.classList.add('about-clicked');
+            cursor.classList.remove('about-hover');
+        });
+        
+        aboutLink.addEventListener('mouseup', () => {
+            cursor.classList.remove('about-clicked');
+            // Don't remove about-hover if still hovering
+            if (isHoveringAbout()) {
+                cursor.classList.add('about-hover');
+            }
+        });
+        
+        // Helper function to check if cursor is hovering over contact link
+        function isHoveringContact() {
+            const contactRect = contactLink.getBoundingClientRect();
+            return (
+                mouseX >= contactRect.left &&
+                mouseX <= contactRect.right &&
+                mouseY >= contactRect.top &&
+                mouseY <= contactRect.bottom
+            );
+        }
+        
+        // Helper function to check if cursor is hovering over about link
+        function isHoveringAbout() {
+            const aboutRect = aboutLink.getBoundingClientRect();
+            return (
+                mouseX >= aboutRect.left &&
+                mouseX <= aboutRect.right &&
+                mouseY >= aboutRect.top &&
+                mouseY <= aboutRect.bottom
+            );
+        }
+        
+        // Initialize the marquee content
+        function initMarquee() {
+            // Create the repeating text with spacing after each repetition
+            let fullText = '';
+            const repetitions = 10; // Enough repetitions to ensure continuous scrolling
+            
+            for (let i = 0; i < repetitions; i++) {
+                fullText += `<span class="footer-text">${footerText}</span>`;
+                // Add 20px of space after each repetition
+                if (i < repetitions - 1) {
+                    fullText += '<span style="display:inline-block;width:20px;"></span>';
+                }
+            }
+            
+            marqueeContent.innerHTML = fullText;
+            
+            // Calculate the width of one repetition plus spacing
+            const oneRepWidth = marqueeContent.firstChild.offsetWidth + 20;
+            
+            // Set the animation duration based on the text length
+            // Using a slower speed factor (25 instead of 50)
+            const duration = oneRepWidth / 25; // Adjusted for slower movement
+            marqueeContent.style.animationDuration = `${duration}s`;
+        }
+        
+        // Pause/resume marquee on hover
+        footerBar.addEventListener('mouseenter', () => {
+            marqueeContent.classList.add('paused');
+        });
+        
+        footerBar.addEventListener('mouseleave', () => {
+            marqueeContent.classList.remove('paused');
+        });
         
         let mouseX = 0;
         let mouseY = 0;
@@ -298,18 +567,60 @@
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
+            
+            // Check if hovering over contact after mouse move
+            if (isHoveringContact() && !cursor.classList.contains('contact-hover') && !cursor.classList.contains('contact-clicked')) {
+                cursor.classList.add('contact-hover');
+            } else if (!isHoveringContact() && cursor.classList.contains('contact-hover') && !cursor.classList.contains('contact-clicked')) {
+                cursor.classList.remove('contact-hover');
+            }
+            
+            // Check if hovering over about after mouse move
+            if (isHoveringAbout() && !cursor.classList.contains('about-hover') && !cursor.classList.contains('about-clicked')) {
+                cursor.classList.add('about-hover');
+            } else if (!isHoveringAbout() && cursor.classList.contains('about-hover') && !cursor.classList.contains('about-clicked')) {
+                cursor.classList.remove('about-hover');
+            }
         });
         
         // Handle mouse click
         document.addEventListener('mousedown', () => {
             cursor.classList.add('clicked');
+            
+            // If clicking while hovering over contact
+            if (isHoveringContact()) {
+                cursor.classList.add('contact-clicked');
+                cursor.classList.remove('contact-hover');
+            }
+            
+            // If clicking while hovering over about
+            if (isHoveringAbout()) {
+                cursor.classList.add('about-clicked');
+                cursor.classList.remove('about-hover');
+            }
         });
         
         document.addEventListener('mouseup', () => {
             cursor.classList.remove('clicked');
+            
+            // If releasing while hovering over contact
+            if (cursor.classList.contains('contact-clicked')) {
+                cursor.classList.remove('contact-clicked');
+                if (isHoveringContact()) {
+                    cursor.classList.add('contact-hover');
+                }
+            }
+            
+            // If releasing while hovering over about
+            if (cursor.classList.contains('about-clicked')) {
+                cursor.classList.remove('about-clicked');
+                if (isHoveringAbout()) {
+                    cursor.classList.add('about-hover');
+                }
+            }
         });
         
-        // Direct click handlers for both logo symbols
+        // Direct click handler for the logo container
         logoContainer.addEventListener('click', () => {
             // Add more spin speed with each click
             spinSpeed += 720; // Add 2 full rotations of momentum
@@ -376,7 +687,7 @@
         // Function to adjust navigation font size and check for overlaps
         function adjustNavigation() {
             // Default size
-            let fontSize = 60;
+            let fontSize = 50; // Reduced from 60 to 50
             
             // Apply initial font size
             navItems.forEach(item => {
@@ -384,56 +695,14 @@
             });
             
             // Get elements
-            const home = document.querySelector('.home');
-            const work = document.querySelector('.work');
             const about = document.querySelector('.about');
             const contact = document.querySelector('.contact');
             const navLeft = document.querySelector('.nav-left');
             const navRight = document.querySelector('.nav-right');
             
-            // Check for overlaps and reduce size if needed
-            function checkOverlap() {
-                const homeRect = home.getBoundingClientRect();
-                const workRect = work.getBoundingClientRect();
-                const aboutRect = about.getBoundingClientRect();
-                const contactRect = contact.getBoundingClientRect();
-                
-                // Check if there's overlap in the left section
-                const leftOverlap = (homeRect.right + 10) > workRect.left;
-                
-                // Check if there's overlap in the right section
-                const rightOverlap = (aboutRect.right + 10) > contactRect.left;
-                
-                return leftOverlap || rightOverlap;
-            }
-            
-            // Reduce font size until no overlap
-            while (checkOverlap() && fontSize > 20) {
-                fontSize -= 2;
-                navItems.forEach(item => {
-                    item.style.fontSize = `${fontSize}px`;
-                });
-            }
-            
             // Get the logo position
             const logoRect = logoContainer.getBoundingClientRect();
             const logoCenter = logoRect.left + (logoRect.width / 2);
-            
-            // Get the positions of all elements
-            const homeRect = home.getBoundingClientRect();
-            const contactRect = contact.getBoundingClientRect();
-            
-            // Position WORK centered between HOME's right edge and the logo's left edge
-            const workCenterX = (homeRect.right + logoRect.left) / 2;
-            const workLeftOffset = workCenterX - navLeft.getBoundingClientRect().left;
-            work.style.left = `${workLeftOffset}px`;
-            work.style.transform = 'translateX(-50%)';
-            
-            // Position ABOUT centered between the logo's right edge and CONTACT's left edge
-            const aboutCenterX = (logoRect.right + contactRect.left) / 2;
-            const aboutLeftOffset = aboutCenterX - navRight.getBoundingClientRect().left;
-            about.style.left = `${aboutLeftOffset}px`;
-            about.style.transform = 'translateX(-50%)';
         }
         
         // Check scroll position to update logo images, cursor color, and navigation visibility
@@ -450,24 +719,6 @@
             const logoContainerBottom = logoContainer.getBoundingClientRect().bottom;
             const logoMiddle = (logoContainerTop + logoContainerBottom) / 2;
             
-            // Show navigation when scrolled
-            if (currentScrollY > 50) {
-                navigation.style.opacity = '1';
-                navigation.style.pointerEvents = 'auto';
-                // Re-adjust navigation when it becomes visible
-                adjustNavigation();
-            } else {
-                navigation.style.opacity = '0';
-                navigation.style.pointerEvents = 'none';
-            }
-            
-            // Change cursor color based on scroll direction
-            if (scrollingDown) {
-                cursor.classList.add('blue-cursor');
-            } else if (scrollingUp) {
-                cursor.classList.remove('blue-cursor');
-            }
-            
             // Check if the middle of the logo container has crossed the boundary
             if (blueSectionBottom <= logoMiddle && !hasScrolledToWhite) {
                 // Fade out original logos
@@ -477,6 +728,11 @@
                 // Fade in blue/white logos
                 logoSymbolBlue.style.opacity = '1';
                 logoTextWhite.style.opacity = '1';
+                
+                // Show navigation when logo changes
+                navigation.style.opacity = '1';
+                navigation.style.pointerEvents = 'auto';
+                adjustNavigation();
                 
                 hasScrolledToWhite = true;
             } 
@@ -490,7 +746,18 @@
                 logoSymbolBlue.style.opacity = '0';
                 logoTextWhite.style.opacity = '0';
                 
+                // Hide navigation when logo changes back
+                navigation.style.opacity = '0';
+                navigation.style.pointerEvents = 'none';
+                
                 hasScrolledToWhite = false;
+            }
+            
+            // Change cursor color based on scroll direction
+            if (scrollingDown) {
+                cursor.classList.add('blue-cursor');
+            } else if (scrollingUp) {
+                cursor.classList.remove('blue-cursor');
             }
         });
         
@@ -565,6 +832,11 @@
                 logoTextWhite.style.opacity = '1';
                 cursor.classList.add('blue-cursor');
                 hasScrolledToWhite = true;
+                
+                // Show navigation if we're already in the white section
+                navigation.style.opacity = '1';
+                navigation.style.pointerEvents = 'auto';
+                adjustNavigation();
             }
         }
         
@@ -573,16 +845,18 @@
             adjustTextSize();
             adjustNavigation();
             checkInitialState();
+            initMarquee(); // Initialize the marquee
             
             // Ensure both logo symbols have the correct styles for interaction
             logoSymbol.style.pointerEvents = 'auto';
             logoSymbolBlue.style.pointerEvents = 'auto';
-            logoContainer.style.cursor = 'pointer';
+            logoContainer.style.cursor = 'none';
         });
         
         window.addEventListener('resize', () => {
             adjustTextSize();
             adjustNavigation();
+            initMarquee(); // Reinitialize marquee on resize
         });
         
         // Run immediately and after fonts load
@@ -590,12 +864,14 @@
         document.fonts.ready.then(() => {
             adjustTextSize();
             adjustNavigation();
+            initMarquee(); // Initialize after fonts are loaded
         });
         
         // Also run after a short delay to ensure everything is rendered
         setTimeout(() => {
             adjustTextSize();
             adjustNavigation();
+            initMarquee(); // Initialize after a delay
         }, 100);
     </script>
 </body>
