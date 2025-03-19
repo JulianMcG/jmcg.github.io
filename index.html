@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JMCG</title>
+    <link rel="icon" href="LOGOSYMBOLBLUE.png" type="image/png">
+    <!-- Import Instrument Serif from Google Fonts with multiple weights -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&display=swap" rel="stylesheet">
+    <!-- Import Material Symbols with bold weight (700) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,700,0,0" />
+    <style>
+        @font-face {
+            font-family: 'NeueHaasDisplayBlack';
+            src: url('NeueHaasDisplayBlack.ttf') format('truetype');
+            font-weight: 900;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'NeueHaasDisplayBold';
+            src: url('NeueHaasDisplayBold.ttf') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+            height: 100%;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            cursor: none; /* Hide default cursor */
+            overflow-x: hidden;
+        }
+        
+        .section {
+            height: 100vh;
+            width: 100%;
+            scroll-snap-align: start;
+            position: relative;
+        }
+        
+        .blue-section {
+            background-color: #0000FF;
+        }
+        
+        .white-section {
+            background-color: #FFFFFF;
+        }
+        
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 20px;
+            position: fixed; /* Changed to fixed to move with scroll */
+            width: 75px;
+            height: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000; /* Increased z-index to ensure logo is on top of everything */
+        }
+        
+        .logo {
+            width: 75px;
+            height: 75px;
+            position: absolute;
+            top: 20px;
+            transition: opacity 0.15s ease; /* Quick fade transition */
+        }
+        
+        .logo-symbol {
+            transform-origin: center;
+        }
+        
+        .text-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+            box-sizing: border-box;
+            z-index: 1001; /* Increased z-index to be above navigation */
+        }
+        
+        .styled-text {
+            font-family: 'Instrument Serif', serif;
+            font-weight: 400;
+            font-size: 100pt;
+            letter-spacing: -0.065em; /* -6.5% tracking */
+            color: white;
+            margin: 0;
+            padding: 0;
+            white-space: nowrap;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        #custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            transition: width 0.2s ease, height 0.2s ease, background-color 0.3s ease;
+        }
+        
+        #custom-cursor.clicked {
+            width: 14px;
+            height: 14px;
+        }
+        
+        #custom-cursor.blue-cursor {
+            background-color: #0000FF;
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 20px; /* Positioned at the bottom of the blue section */
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-family: 'NeueHaasDisplayBlack', sans-serif;
+            font-size: 12pt;
+            font-weight: 900;
+            color: white;
+            letter-spacing: -0.05em; /* -5% tracking */
+            z-index: 100;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 4px; /* Reduced gap to bring icons closer to text */
+            pointer-events: none; /* Make it non-clickable */
+        }
+        
+        .material-symbols-outlined {
+            color: white;
+            font-size: 16px;
+            font-variation-settings: 'wght' 700; /* Make icons bolder */
+            display: flex;
+            align-items: center;
+            transform: translateY(-1px); /* Slight adjustment to align with text */
+        }
+        
+        /* Navigation styles */
+        .navigation {
+            position: fixed;
+            top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0;
+            box-sizing: border-box;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none; /* Initially non-clickable */
+        }
+        
+        .nav-left, .nav-right {
+            display: flex;
+            align-items: center;
+            width: calc(50% - 37.5px); /* Half the width minus half the logo width */
+            height: 75px; /* Match logo height */
+            position: relative;
+        }
+        
+        .nav-left {
+            padding-right: 20px;
+        }
+        
+        .nav-right {
+            padding-left: 20px;
+        }
+        
+        .nav-item {
+            font-family: 'NeueHaasDisplayBold', sans-serif;
+            font-size: 60px; /* Slightly smaller than logo height */
+            font-weight: 700;
+            letter-spacing: -0.05em; /* -5% tracking */
+            color: #0000FF;
+            white-space: nowrap;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 75px; /* Match logo height */
+        }
+        
+        .home {
+            position: absolute;
+            left: 20px; /* Same padding as top (20px) */
+        }
+        
+        .work {
+            position: absolute;
+            left: 50%; /* Centered in the left section */
+            transform: translateX(-50%);
+        }
+        
+        .about {
+            position: absolute;
+            left: 50%; /* Centered in the right section */
+            transform: translateX(-50%);
+        }
+        
+        .contact {
+            position: absolute;
+            right: 20px; /* Same padding as top (20px) */
+        }
+    </style>
+</head>
+<body>
+    <div class="section blue-section" id="top-section">
+        <div class="text-container">
+            <h1 class="styled-text" id="left-text">hello, there</h1>
+            <h1 class="styled-text" id="right-text">my name is julian.</h1>
+        </div>
+        
+        <div class="scroll-indicator">
+            <span class="material-symbols-outlined">keyboard_double_arrow_down</span>
+            SCROLL FOR MORE
+            <span class="material-symbols-outlined">keyboard_double_arrow_down</span>
+        </div>
+        
+        <div class="logo-container">
+            <img src="LOGOSYMBOL.png" alt="Logo Symbol" class="logo logo-symbol" id="logo-symbol">
+            <img src="LOGOTEXT.png" alt="Logo Text" class="logo" id="logo-text">
+            <img src="LOGOSYMBOLBLUE.png" alt="Logo Symbol Blue" class="logo logo-symbol" id="logo-symbol-blue" style="opacity: 0;">
+            <img src="LOGOTEXTWHITE.PNG" alt="Logo Text White" class="logo" id="logo-text-white" style="opacity: 0;">
+        </div>
+    </div>
+    
+    <!-- Navigation that appears when scrolled -->
+    <div class="navigation" id="main-nav">
+        <div class="nav-left">
+            <div class="nav-item home">HOME</div>
+            <div class="nav-item work">WORK</div>
+        </div>
+        <div class="nav-right">
+            <div class="nav-item about">ABOUT</div>
+            <div class="nav-item contact">CONTACT</div>
+        </div>
+    </div>
+    
+    <div class="section white-section" id="second-section">
+        <!-- Content for the white section goes here -->
+    </div>
+    
+    <div id="custom-cursor"></div>
+    
+    <script>
+        const cursor = document.getElementById('custom-cursor');
+        const leftText = document.getElementById('left-text');
+        const rightText = document.getElementById('right-text');
+        const logoSymbol = document.getElementById('logo-symbol');
+        const logoText = document.getElementById('logo-text');
+        const logoSymbolBlue = document.getElementById('logo-symbol-blue');
+        const logoTextWhite = document.getElementById('logo-text-white');
+        const logoContainer = document.querySelector('.logo-container');
+        const navigation = document.getElementById('main-nav');
+        const navItems = document.querySelectorAll('.nav-item');
+        const defaultFontSize = 100; // in pt
+        const minGap = 7.5; // minimum gap in pixels
+        
+        // Original text content without period
+        const originalLeftText = "hello, there";
+        const leftTextWithPeriod = "hello, there.";
+        
+        let mouseX = 0;
+        let mouseY = 0;
+        let cursorX = 0;
+        let cursorY = 0;
+        let isHoveringLogo = false;
+        let rotationAngle = 0;
+        let spinSpeed = 0;
+        let lastFrameTime = 0;
+        let isSpinning = false;
+        let lastSpinTime = 0;
+        let hasScrolledToWhite = false;
+        let lastScrollY = window.scrollY;
+        
+        // Track mouse position
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+        
+        // Handle mouse click
+        document.addEventListener('mousedown', () => {
+            cursor.classList.add('clicked');
+        });
+        
+        document.addEventListener('mouseup', () => {
+            cursor.classList.remove('clicked');
+        });
+        
+        // Direct click handlers for both logo symbols
+        logoContainer.addEventListener('click', () => {
+            // Add more spin speed with each click
+            spinSpeed += 720; // Add 2 full rotations of momentum
+            if (!isSpinning) {
+                isSpinning = true;
+                lastFrameTime = performance.now();
+                lastSpinTime = performance.now();
+                animateSpin();
+            } else {
+                // Update the last spin time
+                lastSpinTime = performance.now();
+            }
+        });
+        
+        // Fidget spinner animation (without reset)
+        function animateSpin() {
+            const currentTime = performance.now();
+            const deltaTime = (currentTime - lastFrameTime) / 1000; // Convert to seconds
+            lastFrameTime = currentTime;
+            
+            // Apply rotation based on current speed
+            rotationAngle += spinSpeed * deltaTime;
+            
+            // Apply rotation to both logo symbols regardless of which is visible
+            logoSymbol.style.transform = `rotate(${rotationAngle}deg)`;
+            logoSymbolBlue.style.transform = `rotate(${rotationAngle}deg)`;
+            
+            // Apply friction to gradually slow down
+            spinSpeed *= 0.99; // Friction factor
+            
+            // Stop animation when speed is very low
+            if (spinSpeed > 0.5) {
+                requestAnimationFrame(animateSpin);
+            } else {
+                isSpinning = false;
+                spinSpeed = 0;
+                // No reset functionality
+            }
+        }
+        
+        // Smooth cursor movement
+        function updateCursor() {
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            
+            cursor.style.left = `${cursorX}px`;
+            cursor.style.top = `${cursorY}px`;
+            
+            requestAnimationFrame(updateCursor);
+        }
+        
+        updateCursor();
+        
+        // Make sure cursor is visible when mouse enters window
+        document.addEventListener('mouseenter', () => {
+            cursor.style.display = 'block';
+        });
+        
+        // Hide cursor when mouse leaves window
+        document.addEventListener('mouseleave', () => {
+            cursor.style.display = 'none';
+        });
+        
+        // Function to adjust navigation font size and check for overlaps
+        function adjustNavigation() {
+            // Default size
+            let fontSize = 60;
+            
+            // Apply initial font size
+            navItems.forEach(item => {
+                item.style.fontSize = `${fontSize}px`;
+            });
+            
+            // Get elements
+            const home = document.querySelector('.home');
+            const work = document.querySelector('.work');
+            const about = document.querySelector('.about');
+            const contact = document.querySelector('.contact');
+            const navLeft = document.querySelector('.nav-left');
+            const navRight = document.querySelector('.nav-right');
+            
+            // Check for overlaps and reduce size if needed
+            function checkOverlap() {
+                const homeRect = home.getBoundingClientRect();
+                const workRect = work.getBoundingClientRect();
+                const aboutRect = about.getBoundingClientRect();
+                const contactRect = contact.getBoundingClientRect();
+                
+                // Check if there's overlap in the left section
+                const leftOverlap = (homeRect.right + 10) > workRect.left;
+                
+                // Check if there's overlap in the right section
+                const rightOverlap = (aboutRect.right + 10) > contactRect.left;
+                
+                return leftOverlap || rightOverlap;
+            }
+            
+            // Reduce font size until no overlap
+            while (checkOverlap() && fontSize > 20) {
+                fontSize -= 2;
+                navItems.forEach(item => {
+                    item.style.fontSize = `${fontSize}px`;
+                });
+            }
+            
+            // Get the logo position
+            const logoRect = logoContainer.getBoundingClientRect();
+            const logoCenter = logoRect.left + (logoRect.width / 2);
+            
+            // Get the positions of all elements
+            const homeRect = home.getBoundingClientRect();
+            const contactRect = contact.getBoundingClientRect();
+            
+            // Position WORK centered between HOME's right edge and the logo's left edge
+            const workCenterX = (homeRect.right + logoRect.left) / 2;
+            const workLeftOffset = workCenterX - navLeft.getBoundingClientRect().left;
+            work.style.left = `${workLeftOffset}px`;
+            work.style.transform = 'translateX(-50%)';
+            
+            // Position ABOUT centered between the logo's right edge and CONTACT's left edge
+            const aboutCenterX = (logoRect.right + contactRect.left) / 2;
+            const aboutLeftOffset = aboutCenterX - navRight.getBoundingClientRect().left;
+            about.style.left = `${aboutLeftOffset}px`;
+            about.style.transform = 'translateX(-50%)';
+        }
+        
+        // Check scroll position to update logo images, cursor color, and navigation visibility
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            const scrollingDown = currentScrollY > lastScrollY;
+            const scrollingUp = currentScrollY < lastScrollY;
+            lastScrollY = currentScrollY;
+            
+            // Get positions for boundary detection
+            const blueSection = document.getElementById('top-section');
+            const blueSectionBottom = blueSection.getBoundingClientRect().bottom;
+            const logoContainerTop = logoContainer.getBoundingClientRect().top;
+            const logoContainerBottom = logoContainer.getBoundingClientRect().bottom;
+            const logoMiddle = (logoContainerTop + logoContainerBottom) / 2;
+            
+            // Show navigation when scrolled
+            if (currentScrollY > 50) {
+                navigation.style.opacity = '1';
+                navigation.style.pointerEvents = 'auto';
+                // Re-adjust navigation when it becomes visible
+                adjustNavigation();
+            } else {
+                navigation.style.opacity = '0';
+                navigation.style.pointerEvents = 'none';
+            }
+            
+            // Change cursor color based on scroll direction
+            if (scrollingDown) {
+                cursor.classList.add('blue-cursor');
+            } else if (scrollingUp) {
+                cursor.classList.remove('blue-cursor');
+            }
+            
+            // Check if the middle of the logo container has crossed the boundary
+            if (blueSectionBottom <= logoMiddle && !hasScrolledToWhite) {
+                // Fade out original logos
+                logoSymbol.style.opacity = '0';
+                logoText.style.opacity = '0';
+                
+                // Fade in blue/white logos
+                logoSymbolBlue.style.opacity = '1';
+                logoTextWhite.style.opacity = '1';
+                
+                hasScrolledToWhite = true;
+            } 
+            // If scrolled back up to the blue section
+            else if (blueSectionBottom > logoMiddle && hasScrolledToWhite) {
+                // Fade in original logos
+                logoSymbol.style.opacity = '1';
+                logoText.style.opacity = '1';
+                
+                // Fade out blue/white logos
+                logoSymbolBlue.style.opacity = '0';
+                logoTextWhite.style.opacity = '0';
+                
+                hasScrolledToWhite = false;
+            }
+        });
+        
+        // Improved approach to text sizing with dynamic period
+        function adjustTextSize() {
+            // First try with the original text (no period)
+            leftText.textContent = originalLeftText;
+            
+            // Start with default size
+            let fontSize = defaultFontSize;
+            leftText.style.fontSize = `${fontSize}pt`;
+            rightText.style.fontSize = `${fontSize}pt`;
+            
+            // Get container width
+            const containerWidth = document.querySelector('.text-container').offsetWidth - 80; // Account for padding
+            
+            // Check if texts fit with minimum gap
+            function checkFit() {
+                const leftWidth = leftText.offsetWidth;
+                const rightWidth = rightText.offsetWidth;
+                return (leftWidth + rightWidth + minGap) <= containerWidth;
+            }
+            
+            // If it fits at default size without period, we're done
+            if (checkFit()) {
+                return; // No resizing needed, no period needed
+            }
+            
+            // Try with period at default size
+            leftText.textContent = leftTextWithPeriod;
+            
+            // Check if it fits with period at default size
+            if (checkFit()) {
+                return; // No resizing needed, but period added
+            }
+            
+            // Need to resize, so keep the period
+            // Binary search to find the largest font size that fits
+            let minSize = 10; // Minimum reasonable font size
+            let maxSize = defaultFontSize;
+            
+            while (maxSize - minSize > 1) {
+                fontSize = Math.floor((minSize + maxSize) / 2);
+                leftText.style.fontSize = `${fontSize}pt`;
+                rightText.style.fontSize = `${fontSize}pt`;
+                
+                if (checkFit()) {
+                    minSize = fontSize;
+                } else {
+                    maxSize = fontSize;
+                }
+            }
+            
+            // Set to the largest size that fits
+            fontSize = minSize;
+            leftText.style.fontSize = `${fontSize}pt`;
+            rightText.style.fontSize = `${fontSize}pt`;
+        }
+        
+        // Initial check for cursor and logo state
+        function checkInitialState() {
+            const blueSection = document.getElementById('top-section');
+            const blueSectionBottom = blueSection.getBoundingClientRect().bottom;
+            const logoContainerTop = logoContainer.getBoundingClientRect().top;
+            const logoContainerBottom = logoContainer.getBoundingClientRect().bottom;
+            const logoMiddle = (logoContainerTop + logoContainerBottom) / 2;
+            
+            if (blueSectionBottom <= logoMiddle) {
+                logoSymbol.style.opacity = '0';
+                logoText.style.opacity = '0';
+                logoSymbolBlue.style.opacity = '1';
+                logoTextWhite.style.opacity = '1';
+                cursor.classList.add('blue-cursor');
+                hasScrolledToWhite = true;
+            }
+        }
+        
+        // Run on load and resize
+        window.addEventListener('load', () => {
+            adjustTextSize();
+            adjustNavigation();
+            checkInitialState();
+            
+            // Ensure both logo symbols have the correct styles for interaction
+            logoSymbol.style.pointerEvents = 'auto';
+            logoSymbolBlue.style.pointerEvents = 'auto';
+            logoContainer.style.cursor = 'pointer';
+        });
+        
+        window.addEventListener('resize', () => {
+            adjustTextSize();
+            adjustNavigation();
+        });
+        
+        // Run immediately and after fonts load
+        adjustTextSize();
+        document.fonts.ready.then(() => {
+            adjustTextSize();
+            adjustNavigation();
+        });
+        
+        // Also run after a short delay to ensure everything is rendered
+        setTimeout(() => {
+            adjustTextSize();
+            adjustNavigation();
+        }, 100);
+    </script>
+</body>
+</html>
