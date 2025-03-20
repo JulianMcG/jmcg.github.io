@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JMCG</title>
+    <link rel="icon" href="LOGOSYMBOLBLUE.png" type="image/png">
+    <!-- Import Instrument Serif from Google Fonts with multiple weights -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&display=swap" rel="stylesheet">
+    <!-- Import Material Symbols with slightly thicker weight (200 instead of 100) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200,0,-25" />
+    <style>
+        @font-face {
+            font-family: 'NeueHaasDisplayBlack';
+            src: url('NeueHaasDisplayBlack.ttf') format('truetype');
+            font-weight: 900;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'NeueHaasDisplayBold';
+            src: url('NeueHaasDisplayBold.ttf') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'NeueHaasDisplayThin';
+            src: url('NeueHaasDisplayThin.ttf') format('truetype');
+            font-weight: 100;
+            font-style: normal;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            height: 100%;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            cursor: none; /* Hide default cursor */
+            overflow-x: hidden;
+            user-select: none; /* Prevent text selection */
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* IE/Edge */
+            background-color: #FFFFFF;
+            height: 100%;
+        }
+        
+        .logo-container {
+            position: fixed;
+            width: 75px;
+            height: 75px;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            cursor: none;
+        }
+        
+        .logo {
+            width: 75px;
+            height: 75px;
+            position: absolute;
+            transition: opacity 0.15s ease;
+            cursor: none;
+        }
+        
+        .logo-symbol {
+            transform-origin: center;
+        }
+        
+        /* Profile image container */
+        .profile-image-container {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 50%;
+            height: 85vh; /* Maximum 85% of viewport height */
+            z-index: 1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            overflow: hidden;
+        }
+        
+        .profile-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            object-position: left bottom;
+        }
+        
+        /* Introduction text container */
+        .intro-text-container {
+            position: fixed;
+            left: 25%; /* Moved much further left from 40% to 25% */
+            top: 50%;
+            width: 75%; /* Increased width to maintain right edge */
+            transform: translateY(-50%);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0 40px;
+            box-sizing: border-box;
+        }
+        
+        .intro-text {
+            font-family: 'Instrument Serif', serif;
+            font-size: 72px;
+            color: #0000FF;
+            text-align: center;
+            line-height: 1.2;
+            letter-spacing: -0.065em; /* -6.5% tracking */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            margin-bottom: 30px; /* Add space between the two text blocks */
+        }
+        
+        .bio-text {
+            font-family: 'NeueHaasDisplayBold', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0000FF;
+            text-align: center;
+            line-height: 1.4;
+            letter-spacing: -0.04em; /* -4% tracking as requested */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            max-width: 600px; /* Limit width for better readability */
+        }
+        
+        #custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background-color: #0000FF;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            transition: width 0.2s ease, height 0.2s ease, background-color 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #custom-cursor.clicked {
+            width: 14px;
+            height: 14px;
+        }
+        
+        #custom-cursor.back-hover {
+            width: 45px;
+            height: 45px;
+        }
+        
+        #custom-cursor.back-clicked {
+            width: 35px;
+            height: 35px;
+        }
+        
+        #cursor-text {
+            font-family: 'NeueHaasDisplayThin', sans-serif;
+            color: white;
+            font-size: 0px;
+            font-weight: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform-origin: center;
+            transition: opacity 0.2s ease, font-size 0.2s ease, color 0.3s ease;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            line-height: 1;
+        }
+        
+        #custom-cursor.back-hover #cursor-text {
+            opacity: 1;
+            font-size: 18px;
+            animation: rotateText 1.5s ease-in-out infinite alternate;
+            transition: opacity 0.2s ease, font-size 0.2s ease;
+        }
+        
+        #custom-cursor.back-clicked #cursor-text {
+            opacity: 1;
+            font-size: 16px;
+            animation: rotateText 1.5s ease-in-out infinite alternate;
+            transition: font-size 0.2s ease;
+        }
+        
+        @keyframes rotateText {
+            0% { transform: rotate(-10deg) scale(1); }
+            100% { transform: rotate(10deg) scale(1); }
+        }
+        
+        /* Navigation styles */
+        .navigation {
+            position: fixed;
+            top: 20px; /* Same top position as logo */
+            left: 20px;
+            z-index: 999;
+            height: 75px; /* Same height as logo container */
+            display: flex;
+            align-items: center; /* Vertically center the content */
+        }
+        
+        .nav-item {
+            font-family: 'NeueHaasDisplayBold', sans-serif;
+            font-size: 50px;
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            color: #0000FF;
+            white-space: nowrap;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1; /* Adjusted from 0.9 to 1 for better alignment */
+            cursor: none;
+            text-decoration: none;
+            display: inline-block;
+            text-decoration: underline;
+        }
+        
+        .nav-item.active {
+            color: #0000FF;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation with BACK instead of ABOUT -->
+    <div class="navigation" id="main-nav">
+        <a href="index.html" class="nav-item back active">BACK</a>
+    </div>
+    
+    <!-- Right-aligned logo -->
+    <div class="logo-container">
+        <img src="LOGOSYMBOLBLUE.png" alt="Logo Symbol Blue" class="logo logo-symbol" id="logo-symbol-blue">
+        <img src="LOGOTEXTWHITE.png" alt="Logo Text White" class="logo" id="logo-text-white">
+    </div>
+    
+    <!-- Profile image container -->
+    <div class="profile-image-container">
+        <img src="me.png" alt="Julian" class="profile-image" id="profile-image">
+    </div>
+    
+    <!-- Introduction text -->
+    <div class="intro-text-container">
+        <h1 class="intro-text">Hello there. My name is Julian.</h1>
+        <p class="bio-text">I'm a 16-year-old graphic designer based in New Jersey, USA. I love creating websites, product concepts, t-shirts, and more! Thanks for checking out my portfolio. I hope you find something you like!</p>
+    </div>
+    
+    <!-- Custom cursor -->
+    <div id="custom-cursor">
+        <div id="cursor-text">GO!</div>
+    </div>
+    
+    <script>
+        const cursor = document.getElementById('custom-cursor');
+        const cursorText = document.getElementById('cursor-text');
+        const logoSymbolBlue = document.getElementById('logo-symbol-blue');
+        const logoTextWhite = document.getElementById('logo-text-white');
+        const logoContainer = document.querySelector('.logo-container');
+        const backLink = document.querySelector('.nav-item.back');
+        const profileImage = document.getElementById('profile-image');
+        
+        let mouseX = 0;
+        let mouseY = 0;
+        let cursorX = 0;
+        let cursorY = 0;
+        let rotationAngle = 0;
+        let spinSpeed = 0;
+        let lastFrameTime = 0;
+        let isSpinning = false;
+        let lastSpinTime = 0;
+        
+        // Track mouse position
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            // Check if hovering over back after mouse move
+            if (isHoveringBack() && !cursor.classList.contains('back-hover') && !cursor.classList.contains('back-clicked')) {
+                cursor.classList.add('back-hover');
+            } else if (!isHoveringBack() && cursor.classList.contains('back-hover') && !cursor.classList.contains('back-clicked')) {
+                cursor.classList.remove('back-hover');
+            }
+        });
+        
+        // Handle mouse click
+        document.addEventListener('mousedown', () => {
+            cursor.classList.add('clicked');
+            
+            // If clicking while hovering over back
+            if (isHoveringBack()) {
+                cursor.classList.add('back-clicked');
+                cursor.classList.remove('back-hover');
+            }
+        });
+        
+        document.addEventListener('mouseup', () => {
+            cursor.classList.remove('clicked');
+            
+            // If releasing while hovering over back
+            if (cursor.classList.contains('back-clicked')) {
+                cursor.classList.remove('back-clicked');
+                if (isHoveringBack()) {
+                    cursor.classList.add('back-hover');
+                }
+            }
+        });
+        
+        // Add hover effect for back link
+        backLink.addEventListener('mouseenter', () => {
+            cursor.classList.add('back-hover');
+        });
+        
+        backLink.addEventListener('mouseleave', () => {
+            if (!cursor.classList.contains('back-clicked')) {
+                cursor.classList.remove('back-hover');
+            }
+        });
+        
+        backLink.addEventListener('mousedown', () => {
+            cursor.classList.add('back-clicked');
+            cursor.classList.remove('back-hover');
+        });
+        
+        backLink.addEventListener('mouseup', () => {
+            cursor.classList.remove('back-clicked');
+            // Don't remove back-hover if still hovering
+            if (isHoveringBack()) {
+                cursor.classList.add('back-hover');
+            }
+        });
+        
+        // Helper function to check if cursor is hovering over back link
+        function isHoveringBack() {
+            const backRect = backLink.getBoundingClientRect();
+            return (
+                mouseX >= backRect.left &&
+                mouseX <= backRect.right &&
+                mouseY >= backRect.top &&
+                mouseY <= backRect.bottom
+            );
+        }
+        
+        // Direct click handler for the logo container
+        logoContainer.addEventListener('click', () => {
+            // Add more spin speed with each click
+            spinSpeed += 720; // Add 2 full rotations of momentum
+            if (!isSpinning) {
+                isSpinning = true;
+                lastFrameTime = performance.now();
+                lastSpinTime = performance.now();
+                animateSpin();
+            } else {
+                // Update the last spin time
+                lastSpinTime = performance.now();
+            }
+        });
+        
+        // Fidget spinner animation
+        function animateSpin() {
+            const currentTime = performance.now();
+            const deltaTime = (currentTime - lastFrameTime) / 1000; // Convert to seconds
+            lastFrameTime = currentTime;
+            
+            // Apply rotation based on current speed
+            rotationAngle += spinSpeed * deltaTime;
+            
+            // Apply rotation to logo symbol
+            logoSymbolBlue.style.transform = `rotate(${rotationAngle}deg)`;
+            
+            // Apply friction to gradually slow down
+            spinSpeed *= 0.99; // Friction factor
+            
+            // Stop animation when speed is very low
+            if (spinSpeed > 0.5) {
+                requestAnimationFrame(animateSpin);
+            } else {
+                isSpinning = false;
+                spinSpeed = 0;
+            }
+        }
+        
+        // Smooth cursor movement
+        function updateCursor() {
+            cursorX += (mouseX - cursorX) * 0.15;
+            cursorY += (mouseY - cursorY) * 0.15;
+            
+            cursor.style.left = `${cursorX}px`;
+            cursor.style.top = `${cursorY}px`;
+            
+            requestAnimationFrame(updateCursor);
+        }
+        
+        updateCursor();
+        
+        // Make sure cursor is visible when mouse enters window
+        document.addEventListener('mouseenter', () => {
+            cursor.style.display = 'block';
+        });
+        
+        // Hide cursor when mouse leaves window
+        document.addEventListener('mouseleave', () => {
+            cursor.style.display = 'none';
+        });
+        
+        // Run on load
+        window.addEventListener('load', () => {
+            // Ensure logo symbol has the correct styles for interaction
+            logoSymbolBlue.style.pointerEvents = 'auto';
+            logoContainer.style.cursor = 'none';
+        });
+    </script>
+</body>
+</html>
