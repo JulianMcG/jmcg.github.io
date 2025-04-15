@@ -5,13 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JMCG</title>
     <link rel="icon" href="LOGOSYMBOLBLUE.png" type="image/png">
-    <!-- Import Instrument Serif from Google Fonts with multiple weights -->
+    <!-- Removed Google Fonts import for Instrument Serif -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&display=swap" rel="stylesheet">
     <!-- Import Material Symbols with slightly thicker weight (200 instead of 100) -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200,0,-25" />
     <style>
+        @font-face {
+            font-family: 'PPEditorialNew-Ultralight-BF644b21500d0c0';
+            src: url('PPEditorialNew-Ultralight-BF644b21500d0c0.otf') format('opentype');
+            font-weight: 300;
+            font-style: normal;
+        }
+        
         @font-face {
             font-family: 'NeueHaasDisplayBlack';
             src: url('NeueHaasDisplayBlack.ttf') format('truetype');
@@ -107,10 +113,10 @@
         }
         
         .styled-text {
-            font-family: 'Instrument Serif', serif;
+            font-family: 'PPEditorialNew-Ultralight-BF644b21500d0c0', serif;
             font-weight: 300;
-            font-size: 100pt;
-            letter-spacing: -0.065em; /* -6.5% tracking */
+            font-size: 75pt;
+            letter-spacing: -0.05em; /* -6.5% tracking */
             color: white;
             margin: 0;
             padding: 0;
@@ -404,6 +410,7 @@
             <a href="about.html" class="nav-item about active">ABOUT</a>
         </div>
         <div class="nav-right">
+
             <a href="mailto:hi@jmcg.me" class="nav-item contact">CONTACT</a>
         </div>
     </div>
